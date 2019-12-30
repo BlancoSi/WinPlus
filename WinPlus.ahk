@@ -44,7 +44,7 @@ return
 
 <#RButton:: Menu, ShortcutsList, Show, %A_GuiX%, %A_GuiY%	; 显示快捷菜单
 
-#Include  ShortcutsList.ahk	; 包含快捷菜单
+#Include  %A_ScriptDir%/ShortcutsList.ahk	; 包含快捷菜单
 
 ;十六进制代码
 	; 0x50 是 WM_INPUTLANGCHANGEREQUEST
