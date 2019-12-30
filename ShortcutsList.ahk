@@ -15,37 +15,7 @@ If (%0% == 0)	; 没有输入
 {
 	If (settingsExist)	; 有存档
 	{
-		FileRead, settings, %settingstxt%
-		paths := {}	; 路径列表
-		Loop, Parse, settings, `n, `r
-		{
-			StringSplit, singleRecordPart, A_LoopField, |	; 以竖线为分隔符
-			Menu, ShortcutsList, Add, %A_Index%. %singleRecordPart1%, LaunchFiles	; 菜单创建一行
-			If (singleRecordPart1 ~= "iS)^.*\.exe$")	; *.exe图标
-				Menu, ShortcutsList, Icon, %A_Index%. %singleRecordPart1%, shell32.dll, 3
-			Else If (singleRecordPart1 ~= "iS)^.*\\$")
-				Menu, ShortcutsList, Icon, %A_Index%. %singleRecordPart1%, shell32.dll, 4
-			Else	; 其他图标
-			{
-				thisFileExtension := chopString(singleRecordPart1)
-				RegRead, temp, HKCR, .%thisFileExtension%
-				RegRead, icoPath, HKCR, %temp%\DefaultIcon
-				If !ErrorLevel
-				{
-					thisIconLibPath := chopString(icoPath, "`,", 1)
-					thisIconNumberInLib := chopString(icoPath, "`,")
-				}
-				Else	; There's no path to the icon stored in the registry (example is .pdf being handled by "SumatraPDF portable")
-				{
-					RegRead, icoPath, HKCR, %temp%\shell\open\command
-					thisIconNumberInLib := 1
-				}
-				If InStr(thisIconLibPath, """")
-					thisIconLibPath := chopString(icoPath, """", 2)	; Might be unreliable. Usually the path is like '"C:\path\to\file.exe" "%1"' or just '"C:\path\to\file.exe"' and it has to be normalized for further use.
-				Menu, ShortcutsList, Icon, %A_Index%. %singleRecordPart1%, %thisIconLibPath%, %thisIconNumberInLib%
-			}
-			paths.Insert(A_Index ". " singleRecordPart1, singleRecordPart2)	; 插入对应地址
-		}
+		Gosub, DoHaveSetings
 	}
 	Else	; 没存档
 	{
@@ -63,14 +33,48 @@ Else	; 有输入
 			isFileNotFolder := (InStr(isFileNotFolder, "d") ? 0 : 1)
 			FileAppend, % (settingsExist ? "`n" : "") A_LoopFileName (isFileNotFolder ? "" : "\") "|" A_LoopFileLongPath, %settingstxt%
 		}
-	ExitApp
+	Gosub, DoHaveSetings
 }
 
 Return
 
 ; 执行
 LaunchFiles:
-	Run, % paths[A_ThisMenuItem]
+Run, % paths[A_ThisMenuItem]
+Return
+
+DoHaveSetings:
+FileRead, settings, %settingstxt%
+paths := {}	; 路径列表
+Loop, Parse, settings, `n, `r
+{
+	StringSplit, singleRecordPart, A_LoopField, |	; 以竖线为分隔符
+	Menu, ShortcutsList, Add, %A_Index%. %singleRecordPart1%, LaunchFiles	; 菜单创建一行
+	If (singleRecordPart1 ~= "iS)^.*\.exe$")	; *.exe图标
+		Menu, ShortcutsList, Icon, %A_Index%. %singleRecordPart1%, shell32.dll, 3
+	Else If (singleRecordPart1 ~= "iS)^.*\\$")
+		Menu, ShortcutsList, Icon, %A_Index%. %singleRecordPart1%, shell32.dll, 4
+	Else	; 其他图标
+	{
+		thisFileExtension := chopString(singleRecordPart1)
+		RegRead, temp, HKCR, .%thisFileExtension%
+		RegRead, icoPath, HKCR, %temp%\DefaultIcon
+		If !ErrorLevel
+		{
+			thisIconLibPath := chopString(icoPath, "`,", 1)
+			thisIconNumberInLib := chopString(icoPath, "`,")
+		}
+		Else	; There's no path to the icon stored in the registry (example is .pdf being handled by "SumatraPDF portable")
+		{
+			RegRead, icoPath, HKCR, %temp%\shell\open\command
+			thisIconNumberInLib := 1
+		}
+		If InStr(thisIconLibPath, """")
+			thisIconLibPath := chopString(icoPath, """", 2)	; Might be unreliable. Usually the path is like '"C:\path\to\file.exe" "%1"' or just '"C:\path\to\file.exe"' and it has to be normalized for further use.
+		Menu, ShortcutsList, Icon, %A_Index%. %singleRecordPart1%, %thisIconLibPath%, %thisIconNumberInLib%
+	}
+	paths.Insert(A_Index ". " singleRecordPart1, singleRecordPart2)	; 插入对应地址
+}
 Return
 
 ; 获取后缀
