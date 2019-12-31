@@ -1,2 +1,3 @@
 # WinPlus
-ahk script
+AHK Script
+
