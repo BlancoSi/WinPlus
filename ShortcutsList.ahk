@@ -43,6 +43,7 @@ LaunchFiles:
 Run, % paths[A_ThisMenuItem]
 Return
 
+; 有存档文件
 DoHaveSetings:
 FileRead, settings, %settingstxt%
 paths := {}	; 路径列表
@@ -51,8 +52,8 @@ Loop, Parse, settings, `n, `r
 	StringSplit, singleRecordPart, A_LoopField, |	; 以竖线为分隔符
 	Menu, ShortcutsList, Add, %A_Index%. %singleRecordPart1%, LaunchFiles	; 菜单创建一行
 	If (singleRecordPart1 ~= "iS)^.*\.exe$")	; *.exe图标
-		Menu, ShortcutsList, Icon, %A_Index%. %singleRecordPart1%, shell32.dll, 3
-	Else If (singleRecordPart1 ~= "iS)^.*\\$")
+		Menu, ShortcutsList, Icon, %A_Index%. %singleRecordPart1%, %singleRecordPart2%
+	Else If (singleRecordPart1 ~= "iS)^.*\\$")	; 文件夹图标
 		Menu, ShortcutsList, Icon, %A_Index%. %singleRecordPart1%, shell32.dll, 4
 	Else	; 其他图标
 	{
