@@ -1,20 +1,22 @@
 ﻿#NoEnv
 #SingleInstance, Force
+#UseHook
 SetWorkingDir, %A_ScriptDir%
 
 Gosub, InitShortcutsList	; 初始化快捷菜单
+;Gosub, InitNumMouse	; 初始化小键盘鼠标.
 
 #b::SoundBeep, 750, 500	; 测试beep
 
 #`::reload	; reload脚本
 
 <#LAlt::  ; 状态
-	Progress
+Progress
 		, x50 y950 m b1 fs30 zh0 CTFFFFFF CW808080
 		, %A_YYYY%-%A_MM%-%A_DD% %A_Hour%:%A_Min%:%A_Sec%
 		, , , Courier New
-	Sleep, 1500
-	Progress, Off
+Sleep, 1500
+Progress, Off
 return
 
 >#Enter::Suspend	; 挂起/启用热键
@@ -38,13 +40,17 @@ return
 ^Space::PostMessage, 0x50, 0, 0x4090409,, A	; 切为英文输入法
 
 #End::	; 关闭显示器
-	Sleep 100
-	SendMessage, 0x112, 0xF170, 2,, Program Manager
+Sleep 100
+SendMessage, 0x112, 0xF170, 2,, Program Manager
 return
 
 <#RButton:: Menu, ShortcutsList, Show, %A_GuiX%, %A_GuiY%	; 显示快捷菜单
 
+;<#Enter::Gosub, NumMouse	;启动小键盘鼠标
+
 #Include  %A_ScriptDir%/ShortcutsList.ahk	; 包含快捷菜单
+
+;#Include  %A_ScriptDir%/NumMouse.ahk	;包含小键盘鼠标
 
 ;十六进制代码
 	; 0x50 是 WM_INPUTLANGCHANGEREQUEST
