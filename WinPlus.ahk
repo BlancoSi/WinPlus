@@ -58,7 +58,7 @@ return
 
 ;#Include  %A_ScriptDir%/NumMouse.ahk	;包含小键盘鼠标
 
-#Include HideTray.ahk	;包含隐藏任务栏
+#Include %A_ScriptDir%/HideTray.ahk	;包含隐藏任务栏
 
 ;十六进制代码
 	; 0x50 是 WM_INPUTLANGCHANGEREQUEST
