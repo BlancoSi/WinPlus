@@ -1,10 +1,14 @@
 ﻿#NoEnv
 #SingleInstance, Force
 #UseHook
+SendMode Input
 SetWorkingDir, %A_ScriptDir%
 
+Menu, Tray, Icon, favicon.ico,, 1
+
 Gosub, InitShortcutsList	; 初始化快捷菜单
-;Gosub, InitNumMouse	; 初始化小键盘鼠标.
+;Gosub, InitNumMouse	; 初始化小键盘鼠标
+Gosub, InitHideTray	;初始化隐藏任务栏
 
 #b::SoundBeep, 750, 500	; 测试beep
 
@@ -48,9 +52,13 @@ return
 
 ;<#Enter::Gosub, NumMouse	;启动小键盘鼠标
 
+<#Enter::Gosub, HideTray	;隐藏任务栏
+
 #Include  %A_ScriptDir%/ShortcutsList.ahk	; 包含快捷菜单
 
 ;#Include  %A_ScriptDir%/NumMouse.ahk	;包含小键盘鼠标
+
+#Include HideTray.ahk	;包含隐藏任务栏
 
 ;十六进制代码
 	; 0x50 是 WM_INPUTLANGCHANGEREQUEST
